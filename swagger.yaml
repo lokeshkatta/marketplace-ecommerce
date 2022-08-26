@@ -1,0 +1,275 @@
+swagger: "2.0"
+info:
+  title: REST API for an e-commerce marketplace
+  description: Demonstrating REST API for an e-commerce marketplace
+  version: 1.0
+  contact:
+    email: lokeshkatta30@gmail.com
+
+schemes: [http,https]
+paths:
+# Read a data using unique id
+  /api/auth/register:
+    post:
+      summary: Register a User 
+      description: Register a user (accept username, password, type_of_user - buyer/seller)
+      produces:
+        - application/json
+      parameters:
+      - in: body
+        name: register
+        required: true
+        schema:
+          $ref: "#/components/schemas/logreg"
+      responses:
+        200:
+          description: Registered (Success)
+          schema:
+            $ref: "#/components/schemas/home"
+  /api/auth/login:
+    post:
+      summary: Login [buyer/seller] 
+      description: Login a user (accept username, password, type_of_user - buyer/seller)
+      produces:
+        - application/json
+      parameters:
+      - in: body
+        name: login
+        required: true
+        schema:
+          $ref: "#/components/schemas/log"
+      responses:
+        200:
+          description: LoggedIn (Success)
+          schema:
+            $ref: "#/components/schemas/home"
+  /api/auth/logout:
+    get:
+      summary: Logout
+      description: Destroy a session
+      responses:
+        200:
+          description: Logged Out (Success)
+          schema:
+            $ref: "#/components/schemas/home"
+  /api/buyer/list-of-sellers:
+    get:
+      summary: Get a list of all sellers
+      description: Get a list of all sellers ( sellers Id)
+      consumes:
+        - application/json
+      responses:
+        200:
+          description: Returns List of sellers Id
+          schema:
+            $ref: "#/components/schemas/seller_lists"
+  /api/buyer/seller-catalog/{seller_id}:
+    get:
+      summary: Get the catalog of a seller by seller_id 
+      description: Returns List of catalogs for particular sellers Id passed
+      parameters:
+      - name: seller_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      consumes:
+        - application/json
+      responses:
+        200:
+          description: get List of catalogs for particular sellers Id
+          schema:
+            $ref: "#/components/schemas/catalog_lists"
+  /api/buyer/seller-catalog/{seller_id}/{catalog}:
+    get:
+      summary: Get the products from a catalog of a seller by seller_id 
+      description: Returns all products from a catalog for a seller_id
+      parameters:
+      - name: seller_id
+        in: path
+        schema:
+          type: integer
+        required: true
+      - name: catalog
+        in: path
+        schema:
+          type: string
+        required: true
+      consumes:
+        - application/json
+      responses:
+        200:
+          description: Returns all products from a particular catalog passed for a seller_id passed
+          schema:
+            $ref: "#/components/schemas/products_lists"
+  /api/buyer/create-order/{seller_id}:
+    post:
+      summary: Send a list of items to create an order for seller with id = seller_id 
+      description: Send a list of items to create an order for seller with id = seller_id
+      produces:
+        - application/json
+      parameters:
+      - name: seller_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - in: body
+        name: create-order
+        required: true
+        schema:
+          $ref: "#/components/schemas/create-order"
+      responses:
+        200:
+          description: Ordered (Success)
+          schema:
+            type: string
+  /api/seller/create-catalog:
+    post:
+      summary: Send a list of items to create a catalog for a seller
+      description: Send a list of items to create a catalog for a seller
+      produces:
+        - application/json
+      parameters:
+      - in: body
+        name: create-catalog
+        required: true
+        schema:
+          $ref: "#/components/schemas/create-catalog"
+      responses:
+        200:
+          description: added (Success)
+          schema:
+            type: string 
+  /api/seller/orders:
+    get:
+      summary: Retrieve the list of orders received by a seller
+      description: Retrieve the list of orders received by a seller (seller_id)
+      responses:
+        200:
+          description: Returns List of orders from buyers for loggedIn sellers Id
+          schema:
+            $ref: "#/components/schemas/order-lists"
+
+components:
+  schemas:
+    home:
+            type: array
+            items:
+              type: string
+    log:
+        type: object
+        properties:
+          username:
+            type: string
+          password:
+            type: string
+        example:
+          username: "buyer"
+          password: "buyer"
+    logreg:
+        type: object
+        properties:
+          username:
+            type: string
+          password:
+            type: string
+          type_of_user:
+            type: string
+        example:
+          username: "buyer"
+          password: "buyer"
+          type_of_user: "buyer"
+    seller_lists:
+            type: array
+            items:
+              type: object
+              properties:
+                Id:
+                  type: integer
+                username:
+                  type: string
+    catalog_lists:
+            type: array
+            items:
+              type: object
+              properties:
+                catalog:
+                  type: string
+    products_lists:
+            type: array
+            items:
+              type: object
+              properties:
+                Id:
+                  type: integer
+                name:
+                  type: string
+                price:
+                  type: integer
+                catalog:
+                  type: string
+                seller_id:
+                  type: integer
+                createdAt:
+                  type: string 
+                  format: date-time
+    create-order: 
+            type: object 
+            properties: 
+              orders: 
+                type: array 
+                items: 
+                  type: array 
+                    items: 
+                      type: string 
+                    items: 
+                      type: integer 
+                    items: 
+                      type: string 
+                    items: 
+                      type: integer 
+            example: 
+              orders: [["mobile-phone",3425,"electronics",2]]
+    create-catalog:
+        type: object
+        properties:
+          name:
+            type: string
+          price:
+            type: integer
+          catalog:
+            type: string
+        example:
+          name: mobile-phone
+          price: 3425
+          catalog: "electronics"
+    order-lists:
+        type: object
+        properties:
+          Id:
+            type: integer
+          buyer_id:
+            type: integer
+          name:
+            type: string
+          price:
+            type: integer
+          catalog:
+            type: string
+          quantity:
+            type: integer
+          seller_id:
+            type: integer
+          createdAt:
+            type: string
+            format: date-time
+        example:
+          Id: 1
+          buyer_id: 1
+          name: mobile-phone
+          price: 3425
+          catalog: "electronics"
+          quantity: 23
+          seller_id: 2
+          createdAt: "Thu Aug 25 2022 23:55:34 GMT+0530 (India Standard Time)"
