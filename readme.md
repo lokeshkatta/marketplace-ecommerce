@@ -1,4 +1,5 @@
 RUN LOCALLY:
+
     ################### To run project locally ########################
                             1. cd project
                             2. npm run setup
@@ -8,6 +9,7 @@ RUN LOCALLY:
     ###################################################################
 
 HEROKU DEPLOYED SWAGGER URL:
+
     ####################### To use SWAGGER UI #########################
 
             HEROKU:https://marketplace-commerce.herokuapp.com/api-docs
@@ -17,6 +19,7 @@ HEROKU DEPLOYED SWAGGER URL:
     ###################################################################
 
 API USAGE:
+
         GET /:
         GET /api/:
         GET /api/auth/:
